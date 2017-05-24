@@ -1,0 +1,9 @@
+<form (submit)='login()' #formData='ngForm'>
+<label for="username">User Name: </label>
+<input type="text"
+  [(ngModel)]='username'
+  name='username'
+  minlength="1"
+  required>  
+<input type="submit" value='Go to The Wall'>
+</form>

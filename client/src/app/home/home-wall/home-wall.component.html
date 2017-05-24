@@ -1,0 +1,13 @@
+<h1>The Angular Wall</h1>
+<button (click)="logOut()">LogOut</button>
+<hr>  
+<!-- New Message Form -->
+<form (submit)="postNewMessage()">
+  <label for="message"> Message: </label>
+  <textarea [(ngModel)]="newMessage.message" name="messgae"></textarea>
+  <input type="submit" value="Post Message">
+</form>
+<hr>
+<!-- Display Messages -->
+
+</div>
