@@ -258,7 +258,7 @@ module.exports = "<form (submit)='login()' #formData='ngForm'>\n<label for=\"use
 /***/ 208:
 /***/ (function(module, exports) {
 
-module.exports = "<h1>The Angular Wall</h1>\n<button (click)=\"logOut()\">LogOut</button>\n<hr>  \n<!-- New Message Form -->\n<form (submit)=\"postNewMessage()\">\n  <label for=\"message\"> Message: </label>\n  <textarea [(ngModel)]=\"newMessage.message\" name=\"messgae\"></textarea>\n  <input type=\"submit\" value=\"Post Message\">\n</form>\n<hr>\n<!-- Display Messages -->\n\n</div>"
+module.exports = "<h1>The Angular Wall</h1>\n<button (click)=\"logOut()\">LogOut</button>\n<hr>\n<!-- New Message Form -->\n<form (submit)=\"postNewMessage()\">\n  <label for=\"message\"> Message: </label>\n  <textarea [(ngModel)]=\"newMessage.message\" name=\"messgae\"></textarea>\n  <input type=\"submit\" value=\"Post Message\">\n</form>\n<hr>\n<!-- Display Messages -->\n<div *ngFor=\"let msg of allMessages\">\n  <p><strong>{{msg.author}}</strong> - {{msg.createdAt | date: 'h:mm a MM/dd/yyyy'}}</p>\n  <p>{{msg.message}}</p>\n  <div *ngFor=\"let com of msg.comments\">\n    <p><strong>{{com.author}}</strong> - {{com.createdAt | date: 'h:mm a MM/dd/yyyy'}}</p>\n    <p>{{com.comment}}</p>\n  </div>\n  <form #f=\"ngForm\" (ngSubmit)=\"postNewComment(f, msg._id)\" noValidate>\n    <label for=\"comment\"> Comment: </label>\n    <textarea  name=\"newComment\" ngModel></textarea>\n    <input type=\"submit\" value=\"Post Comment\">\n  </form>\n</div>"
 
 /***/ }),
 
@@ -315,13 +315,15 @@ var HomeService = (function () {
             .toPromise();
     };
     HomeService.prototype.newMessage = function (newMessage) {
+        console.log(newMessage);
         return this._http
             .post('/newMessage', newMessage, OPTIONS)
             .toPromise();
     };
     HomeService.prototype.newComment = function (newComment, id) {
+        console.log('Comment: ' + newComment + ' ID: ' + id);
         return this._http
-            .post(id + "/message", newComment, OPTIONS)
+            .post("/" + id + "/newComment", { newComment: newComment }, OPTIONS)
             .toPromise();
     };
     HomeService.prototype.checkStatus = function () {
@@ -347,6 +349,21 @@ var _a;
 
 module.exports = __webpack_require__(139);
 
+
+/***/ }),
+
+/***/ 481:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Message; });
+var Message = (function () {
+    function Message() {
+    }
+    return Message;
+}());
+
+//# sourceMappingURL=message.js.map
 
 /***/ }),
 
@@ -408,7 +425,8 @@ var _a, _b;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__home_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__message__ = __webpack_require__(481);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(42);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomeWallComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -422,24 +440,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var HomeWallComponent = (function () {
     function HomeWallComponent(_homeService, _router) {
-        var _this = this;
         this._homeService = _homeService;
         this._router = _router;
-        this._homeService.getAll()
-            .then(function (data) { _this.allMessages = data; })
-            .catch(function (err) { console.log(err); });
-        console.log('wall 0-----', this.allMessages);
+        this.newMessage = new __WEBPACK_IMPORTED_MODULE_2__message__["a" /* Message */];
+        this.refreshMessages();
     }
     HomeWallComponent.prototype.ngOnInit = function () {
     };
     HomeWallComponent.prototype.postNewMessage = function () {
         this._homeService.newMessage(this.newMessage);
+        this.refreshMessages();
+    };
+    HomeWallComponent.prototype.postNewComment = function (form, id) {
+        var _this = this;
+        this._homeService.newComment(form.value.newComment, id)
+            .then(function () {
+            _this.refreshMessages();
+        })
+            .catch(function (err) { console.log(err); });
     };
     HomeWallComponent.prototype.logOut = function () {
         this._homeService.logout();
         this._router.navigate(['/']);
+    };
+    HomeWallComponent.prototype.refreshMessages = function () {
+        var _this = this;
+        this._homeService.getAll()
+            .then(function (data) {
+            _this.allMessages = data;
+        })
+            .catch(function (err) { console.log(err); });
     };
     return HomeWallComponent;
 }());
@@ -449,7 +482,7 @@ HomeWallComponent = __decorate([
         template: __webpack_require__(208),
         styles: [__webpack_require__(204)]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__home_service__["a" /* HomeService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__home_service__["a" /* HomeService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__home_service__["a" /* HomeService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__home_service__["a" /* HomeService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */]) === "function" && _b || Object])
 ], HomeWallComponent);
 
 var _a, _b;

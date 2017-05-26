@@ -31,13 +31,15 @@ export class HomeService {
       .toPromise()
   }
   newMessage (newMessage) {
+    console.log(newMessage)
     return this._http
       .post('/newMessage', newMessage, OPTIONS)
       .toPromise()
   }
   newComment (newComment, id) {
+    console.log('Comment: ' + newComment + ' ID: ' + id)
     return this._http
-      .post(`${id}/message`, newComment, OPTIONS)
+      .post(`/${id}/newComment`, {newComment: newComment}, OPTIONS)
       .toPromise()
   }
   checkStatus () {

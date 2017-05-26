@@ -11,18 +11,27 @@ module.exports = {
       })  
   },
   newMessage: (req, res) => {
-    let newMessage = new Message(req.body)
+    let newMessage = new message ({
+      message: req.body.message,
+      author: req.session.user
+    })
+    console.log(newMessage)
     newMessage.save()
       .then(() => {res.json(true)})
       .catch(err => {console.log('Save Error', err); res.json(false)})
   },
   newComment: (req, res) => {
+    console.log('0------')
     message.findOne({_id: req.params.id}, (err, message) => {
-      let newComment = new Comment(req.body)
-      newComment._message = message._id
-      message.comments.push(comment)
-      comment.save(err => {
+      let newComment = new comment({
+        comment: req.body.newComment,
+        author: req.session.user,
+        _message: message._id
+      })
+      message.comments.push(newComment)
+      newComment.save(err => {
         message.save(err => {
+          console.log('10-----')
           if  (err) {console.log('Comment save error', err); res.json(false)}
           else {res.json(true)}
         })

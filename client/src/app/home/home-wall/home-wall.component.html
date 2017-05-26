@@ -1,6 +1,6 @@
 <h1>The Angular Wall</h1>
 <button (click)="logOut()">LogOut</button>
-<hr>  
+<hr>
 <!-- New Message Form -->
 <form (submit)="postNewMessage()">
   <label for="message"> Message: </label>
@@ -9,5 +9,16 @@
 </form>
 <hr>
 <!-- Display Messages -->
-
+<div *ngFor="let msg of allMessages">
+  <p><strong>{{msg.author}}</strong> - {{msg.createdAt | date: 'h:mm a MM/dd/yyyy'}}</p>
+  <p>{{msg.message}}</p>
+  <div *ngFor="let com of msg.comments">
+    <p><strong>{{com.author}}</strong> - {{com.createdAt | date: 'h:mm a MM/dd/yyyy'}}</p>
+    <p>{{com.comment}}</p>
+  </div>
+  <form #f="ngForm" (ngSubmit)="postNewComment(f, msg._id)" noValidate>
+    <label for="comment"> Comment: </label>
+    <textarea  name="newComment" ngModel></textarea>
+    <input type="submit" value="Post Comment">
+  </form>
 </div>
